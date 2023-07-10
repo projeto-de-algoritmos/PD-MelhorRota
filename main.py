@@ -1,8 +1,11 @@
 import numpy as np
+import tkinter as tk
+from tkinter import messagebox
+from PIL import ImageTk, Image
+
 
 def calcular_custo(origem, destino, peso):
     # Função para calcular o custo entre um ponto de origem e um destino
-    # Neste exemplo, o custo será baseado na distância multiplicada pelo peso do pacote
     distancia = abs(destino - origem)
     return distancia * peso
 
@@ -31,13 +34,68 @@ def encontrar_rota_otimizada(origens, destinos, pesos, capacidade_veiculo):
 
     return rota_otimizada[::-1]
 
-# Exemplo de uso do sistema de recomendação de rotas otimizadas
-origens = [1, 2, 3, 4]  # Pontos de origem
-destinos = [2, 4, 1, 3]  # Pontos de destino
-pesos = [2, 1, 3, 2]  # Pesos dos pacotes
-capacidade_veiculo = 5
+def exibir_rota():
+    origens = [int(x) for x in entry_origens.get().split(",")]
+    destinos = [int(x) for x in entry_destinos.get().split(",")]
+    pesos = [int(x) for x in entry_pesos.get().split(",")]
+    capacidade_veiculo = int(entry_capacidade.get())
 
-rota = encontrar_rota_otimizada(origens, destinos, pesos, capacidade_veiculo)
-print("Rota otimizada:")
-for origem, destino in rota:
-    print(f"Origem: {origem}, Destino: {destino}")
+    rota = encontrar_rota_otimizada(origens, destinos, pesos, capacidade_veiculo)
+
+    messagebox.showinfo("Rota otimizada", formatar_rota(rota))
+
+def formatar_rota(rota):
+    rota_formatada = ""
+    for origem, destino in rota:
+        rota_formatada += f"Origem: {origem}, Destino: {destino}\n"
+    return rota_formatada
+
+# Criar a janela da interface
+window = tk.Tk()
+window.title("Sistema de Recomendação de Rotas Otimizadas")
+
+# Carregar a imagem
+imagem = ImageTk.PhotoImage(Image.open("carro.png"))
+
+# Exibir a imagem na janela
+label_imagem = tk.Label(window, image=imagem)
+label_imagem.pack()
+
+
+# Criar os rótulos e campos de entrada
+label_capacidade = tk.Label(window, text="Capacidade do Veículo: (Digite um número inteiro)")
+entry_capacidade = tk.Entry(window)
+
+label_origens = tk.Label(window, text="Origens:(separe os números com vírgula)")
+entry_origens = tk.Entry(window)
+
+label_destinos = tk.Label(window, text="Destinos:(separe os números com vírgula)")
+entry_destinos = tk.Entry(window)
+
+label_pesos = tk.Label(window, text="Pesos:(separe os números com vírgula)")
+entry_pesos = tk.Entry(window)
+
+
+# Criar o botão para exibir a rota
+button_exibir_rota = tk.Button(window, text="Exibir Rota Otimizada", command=exibir_rota)
+
+# Posicionar os elementos na janela
+
+label_capacidade.pack()
+entry_capacidade.pack()
+
+label_origens.pack()
+entry_origens.pack()
+
+label_destinos.pack()
+entry_destinos.pack()
+
+label_pesos.pack()
+entry_pesos.pack()
+
+
+
+button_exibir_rota.pack()
+
+# Iniciar o loop da interface
+window.mainloop()
