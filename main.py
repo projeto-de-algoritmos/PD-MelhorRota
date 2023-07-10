@@ -55,7 +55,7 @@ window = tk.Tk()
 window.title("Sistema de Recomendação de Rotas Otimizadas")
 
 # Carregar a imagem
-imagem = ImageTk.PhotoImage(Image.open("carro.png"))
+imagem = ImageTk.PhotoImage(Image.open("imagem.png"))
 
 # Exibir a imagem na janela
 label_imagem = tk.Label(window, image=imagem)
