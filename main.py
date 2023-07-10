@@ -11,25 +11,27 @@ def calcular_custo(origem, destino, peso):
 
 def encontrar_rota_otimizada(origens, destinos, pesos, capacidade_veiculo):
     n = len(origens)
-    dp = np.zeros((n, capacidade_veiculo+1))
+    dp = np.zeros((n+1, capacidade_veiculo+1), dtype=np.float64)
+    caminho = np.zeros((n+1, capacidade_veiculo+1), dtype=np.int32)
 
-    for i in range(n):
-        for j in range(capacidade_veiculo+1):
-            if j >= pesos[i]:
-                dp[i][j] = max(dp[i-1][j], dp[i-1][j-pesos[i]] + calcular_custo(origens[i], destinos[i], pesos[i]))
+    for i in range(1, n+1):
+        for j in range(1, capacidade_veiculo+1):
+            if pesos[i-1] <= j:
+                custo_com_item = calcular_custo(origens[i-1], destinos[i-1], pesos[i-1]) + dp[i-1][j-pesos[i-1]]
+                if custo_com_item > dp[i-1][j]:
+                    dp[i][j] = custo_com_item
+                    caminho[i][j] = 1
+                else:
+                    dp[i][j] = dp[i-1][j]
             else:
                 dp[i][j] = dp[i-1][j]
-    
-    # Recupera a rota ótima a partir da tabela dp
+
     rota_otimizada = []
-    i, j = n-1, capacidade_veiculo
-    while i >= 0 and j >= 0:
-        if i == 0 and dp[i][j] != 0:
-            rota_otimizada.append((origens[i], destinos[i]))
-            break
-        elif dp[i][j] != dp[i-1][j]:
-            rota_otimizada.append((origens[i], destinos[i]))
-            j -= pesos[i]
+    i, j = n, capacidade_veiculo
+    while i > 0 and j > 0:
+        if caminho[i][j] == 1:
+            rota_otimizada.append((origens[i-1], destinos[i-1]))
+            j -= pesos[i-1]
         i -= 1
 
     return rota_otimizada[::-1]
